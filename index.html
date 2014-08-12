@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Object-Oriented CoffeeScript</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+		<script>
+			if( window.location.search.match( /print-pdf/gi ) ) {
+				var link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = 'css/print/pdf.css';
+				document.getElementsByTagName( 'head' )[0].appendChild( link );
+			}
+		</script>
+
+		<style type="text/css">
+
+			h2 small {
+				color: #CC9393
+			}
+
+		</style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Object-Oriented CoffeeScript</h1>
+					<p>
+						Richard Clayton - DevOps/Fullstack Engineer <br />
+						<hr />
+						<small>
+							<a href="mailto:rclayton@bericotechnologies.com">rclayton@bericotechnologies.com</a> <br />
+							<a href="http://rclayton.silvrback.com">http://rclayton.silvrback.com</a> <br />
+							<a href="http://www.gettingcirrius.com">http://www.gettingcirrius.com</a> <br />
+							<img src="images/github.png" alt="" style="border: none; background: none; height: 24px; margin: 3px 0 0 0" />
+							<a href="https://github.com/berico-rclayton">berico-rclayton</a>,
+							<a href="https://github.com/berico-rclayton">rclayton</a>
+						</small>
+					</p>
+				</section>
+
+				<section>
+					<h2>Goals</h2>
+					<ol>
+						<li class="fragment">Discuss Object-Oriented Programming (OOP) and how it pertains to JavaScript.</li>
+						<li class="fragment">Demonstrate how CoffeeScript simplifies using OOP in JavaScript.</li>
+					</ol>
+				</section>
+
+				<section>
+					<h2>About Me</h2>
+					<p>
+						<ul>
+							<li>Chief Software Engineer, Berico Technologies</li>
+							<li>Hobbies:
+								<ul>
+									<li><strong>Software</strong> (truly blessed to do what I love!)</li>
+									<li><strong>Traveling</strong>, especially to historic locales.</li>
+									<li><strong>Boogie Boarding</strong></li>
+									<li><strong>Remodeling</strong> my house</li>
+									<li><strong>Whiskey</strong>, especially Scotch and Bourbon.</li>
+								</ul>
+							<li>Married with two precocious daughters (3 and 5)...</li>
+						</ul>
+					</p>
+				</section>
+
+
+				<section>
+					<section>
+						<h2>Programming Paradigms</h2>
+					</section>
+
+					<section>
+						<p>
+							<blockquote>
+								A programming paradigm is a fundamental style of computer programming, a way of building the structure and elements of computer programs.
+							</blockquote>
+							<br />
+							<br />
+							<small>http://en.wikipedia.org/wiki/Programming_paradigm</small>
+						</p>
+					</section>
+
+					<section>
+						<h2>Six Fundamental Paradigms</h2>
+						<ul>
+							<li>Imperative</li>
+							<li>Declaritve</li>
+							<li>Functional</li>
+							<li>Object-Oriented</li>
+							<li>Logic</li>
+							<li>Symbolic</li>
+						</ul>
+						<br />
+						<br />
+						<small>http://en.wikipedia.org/wiki/Programming_paradigm</small>
+					</section>
+
+
+					<section>
+						<h2>JavaScript is a hybrid</h2>
+						<ul>
+							<li>Imperative</li>
+							<li>Functional</li>
+							<li>Object-Oriented</li>
+						</ul>
+						<br />
+						<br />
+						<small>http://en.wikipedia.org/wiki/Comparison_of_multi-paradigm_programming_languages</small>
+					</section>
+
+					<section>
+						<h2>Imperative <br /><small>explicit statements that change a program state</small></h2>
+						<p>Programmers describe how to do something:</p>
+						<pre><code>document.getElementById("caption").style.width = '300px';</code></pre>
+						<p>Instead of describing the end state (declarative):</p>
+						<pre><code><div style="width: 300px">My Caption</div></code></pre>
+						<br /><br />
+						<small>http://en.wikipedia.org/wiki/Comparison_of_multi-paradigm_programming_languages</small>
+					</section>
+
+					<section>
+						<h2>Functional <br /><small>uses evaluation of mathematical functions <br />and avoids state and mutable data</small></h2>
+						<p>Behavior is described as functions:</p>
+						<pre><code>function square(x){ return x * x; }</code></pre>
+						<p>State passed into the function remains unchanged:</p>
+<pre><code>var x = 5;
+var y = square(x);
+console.log(x); // 5
+console.log(y); // 25
+</code></pre>
+						<br /><br />
+						<small>http://en.wikipedia.org/wiki/Comparison_of_multi-paradigm_programming_languages</small>
+					</section>
+
+					<section>
+						<h2>Object-Oriented <br /><small>uses data structures consisting of <br />data fields and methods together</small></h2>
+						<p>Behavior is defined on the container:</p>
+<pre><code>var Car = function(){
+ var speed = 0;
+ this.accelerate = function(mph){
+  speed += mph;
+ };
+};
+</code></pre>
+						<p>Behavior of the container modifies state:</p>
+<pre><code>
+var car = new Car();
+car.accelerate(10); // 10mph
+car.accelerate(15); // 25mph
+</code></pre>
+						<br /><br />
+						<small>http://en.wikipedia.org/wiki/Comparison_of_multi-paradigm_programming_languages</small>
+					</section>
+
+				</section>
+
+				<section>
+
+					<section>
+						<h2>Object-Oriented JavaScript <br /><small>Can be confusing.</small></h2>
+					</section>
+
+					<section>
+						<h2>JavaScript uses Prototypical Inheritance</h2>
+						<ul>
+							<li>Objects inherit directly from other objects (even instances).</li>
+							<li>Properties/functions are "resolved" through a prototype chain.</li>
+						</ul>
+<pre><code>function Car(){
+ console.log("Vroom!");
+ this.move = function(){ console.log("Moving"); }
+};
+
+function Honda(){
+ console.log("Gas efficient, Vroom!");
+};
+
+Honda.prototype = Car;
+
+var civic = new Honda();
+civic.move(); // Resolved to Car
+</code></pre>
+					</section>
+
+
+					<section>
+						<img src="images/twitter.png" alt="" />
+					</section>
+				</section>
+
+				<section>
+
+					<section>
+						<h2>Object-Oriented CoffeeScript</h2>
+					</section>
+
+					<section>
+						<h2>Class Declaration</h2>
+<pre><code>class Car
+ speed: 0
+ move: (mph) -> @speed += mph
+</code></pre>
+						<br />
+<pre><code>var Car;
+
+Car = (function() {
+ function Car() {}
+
+ Car.prototype.speed = 0;
+
+ Car.prototype.move = function(mph) {
+  return this.speed += mph;
+ };
+
+ return Car;
+})();
+</code></pre>
+					</section>
+
+					<section>
+						<h2>Constructors</h2>
+<pre><code>class Car
+ constructor: (name) ->
+  console.log "Created car named '#{name}'"
+</code></pre><br />
+<pre><code>var Car;
+
+Car = (function() {
+ function Car(name) {
+  console.log("Created car named '" + name + "'");
+ }
+
+ return Car;
+})();
+</code></pre>
+					</section>
+
+					<section>
+						<h2>Automatic Property Declaration</h2>
+<pre><code>class Car
+ constructor: (@name, @mpg) ->
+  console.log "Created car named '#{@name}' with #{@mpg} mpgs."
+</code></pre><br />
+<pre><code>var Car;
+
+Car = (function() {
+  function Car(name, mpg) {
+   this.name = name;
+   this.mpg = mpg;
+   console.log("Created car named '" + this.name
+	  + "' with " + this.mpg + " mpgs.");
+ }
+
+ return Car;
+
+})();
+</code></pre>
+					</section>
+
+					<section>
+						<h2>Member visibility</h2>
+<pre><code>class Clazz
+ hiddenVar = 10
+ publicVar: 10
+ hiddenMethod = -> console.log "Hidden!"
+ publicMethod: -> console.log "Public!"
+</code></pre><br />
+<pre><code>var Clazz;
+
+Clazz = (function() {
+ var hiddenMethod, hiddenVar;
+ function Clazz() {}
+ hiddenVar = 10;
+ Clazz.prototype.publicVar = 10;
+ hiddenMethod = function() {
+  return console.log("Hidden!");
+ };
+ Clazz.prototype.publicMethod = function() {
+  return console.log("Public!");
+ };
+ return Clazz;
+})();
+</code></pre>
+          <small><strong>Caution!</strong>  There are no 'private' variables in JavaScript, simply those not in scope.<br />Hidden variables are actually global to all instances of the type for which they are defined!!!!</small>
+					</section>
+
+					<section>
+						<h2>Class properties and methods</h2>
+<pre><code>class Clazz
+ @CLASS_PROPERTY = 123
+ @CLASS_METHOD = -> console.log Clazz.CLASS_PROPERTY
+
+Clazz.CLASS_METHOD()
+</code></pre><br />
+<pre><code>var Clazz;
+
+Clazz = (function() {
+ function Clazz() {}
+
+ Clazz.CLASS_PROPERTY = 123;
+
+ Clazz.CLASS_METHOD = function() {
+  return console.log(Clazz.CLASS_PROPERTY);
+ };
+
+ return Clazz;
+
+})();
+
+Clazz.CLASS_METHOD();
+</code></pre>
+					</section>
+
+					<section>
+						<h2>Inheritance</h2>
+<pre><code>class Human
+ hitPoints = 10
+ receiveDamage: (dmg) ->
+  hitPoints -= dmg
+
+class Knight extends Human
+ attack: (human) ->
+  human.receiveDamage 15
+
+serf = new Human
+knight1 = new Knight
+knight1.attack serf
+
+knight2 = new Knight
+knight2.attack knight1
+</code></pre>
+					</section>
+
+					<section>
+						<h2>Inheritance, cont.</h2>
+<pre><code>var Human, Knight, knight1, knight2, serf,
+__hasProp = {}.hasOwnProperty,
+__extends = function(child, parent) {
+ for (var key in parent) {
+  if (__hasProp.call(parent, key)) child[key] = parent[key];
+ }
+ function ctor() { this.constructor = child; }
+ ctor.prototype = parent.prototype;
+ child.prototype = new ctor();
+ child.__super__ = parent.prototype; return child;
+};
+</code></pre>
+					</section>
+
+					<section>
+						<h2>Inheritance, cont.</h2>
+<pre><code>Human = (function() {
+ var hitPoints;
+ function Human() {}
+  hitPoints = 10;
+  Human.prototype.receiveDamage = function(dmg) {
+  return hitPoints -= dmg;
+ };
+ return Human;
+})();
+</code></pre>
+					</section>
+
+					<section>
+						<h2>Inheritance, cont.</h2>
+<pre><code>Knight = (function(_super) {
+ __extends(Knight, _super);
+ function Knight() {
+  return Knight.__super__.constructor.apply(this, arguments);
+ }
+ Knight.prototype.attack = function(human) {
+  return human.receiveDamage(15);
+ };
+ return Knight;
+})(Human);
+
+serf = new Human;
+knight1 = new Knight;
+knight1.attack(serf);
+
+knight2 = new Knight;
+knight2.attack(knight1);
+</code></pre>
+					</section>
+
+					<section>
+						<h2>Calling the Parent's Constructor</h2>
+<pre><code>class Car
+ constructor: (@topSpeed, @mpg) ->
+
+class Honda extends Car
+ constructor: (topSpeed, mpg, @color) ->
+  super topSpeed, mpg
+</code></pre><br />
+<pre><code>Car = (function() {
+ function Car(topSpeed, mpg) {
+  this.topSpeed = topSpeed;
+  this.mpg = mpg;
+ }
+ return Car;
+})();
+
+Honda = (function(_super) {
+ __extends(Honda, _super);
+ function Honda(topSpeed, mpg, color) {
+  this.color = color;
+  Honda.__super__.constructor.call(this, topSpeed, mpg);
+ }
+ return Honda;
+})(Car);</code></pre>
+					</section>
+
+					<section>
+						<h2>Calling Methods on Super Type</h2>
+<pre><code>class Car
+ speed: 10
+ move: (mph) ->
+  @speed += mph
+ getSpeed: -> @speed
+
+class Honda extends Car
+ move: (mph) ->
+  console.log "This little Honda's movin'!"
+  super mph
+</code></pre><br />
+<pre><code>Honda = (function(_super) {
+ __extends(Honda, _super);
+
+ function Honda() {
+  return Honda.__super__.constructor.apply(this, arguments);
+ }
+
+ Honda.prototype.move = function(mph) {
+  console.log("This little Honda's movin'!");
+  return Honda.__super__.move.call(this, mph);
+ };
+
+ return Honda;
+})(Car);
+</code></pre>
+					</section>
+
+					<section>
+						<h2>Protypical Assignment</h2>
+<pre><code>class Car
+ speed: 10
+ move: (mph) ->
+  @speed += mph
+
+Car::getSpeed -> @speed
+</code></pre><br />
+<pre><code>var Car;
+
+Car = (function() {
+ function Car() {}
+ Car.prototype.speed = 10;
+ Car.prototype.move = function(mph) {
+  return this.speed += mph;
+ };
+ return Car;
+})();
+
+Car.prototype.getSpeed(function() {
+ return this.speed;
+});
+</code></pre>
+					</section>
+
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: 'beige', // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
