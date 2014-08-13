@@ -37,6 +37,10 @@
 				color: #CC9393
 			}
 
+			.emphasize {
+				color: #c0a86e
+			}
+
 		</style>
 
 		<!--[if lt IE 9]>
@@ -52,46 +56,53 @@
 			<div class="slides">
 				<section>
 					<h1>Object-Oriented CoffeeScript</h1>
+					<hr />
 					<p>
 						Richard Clayton - DevOps/Fullstack Engineer <br />
-						<hr />
-						<small>
-							<a href="mailto:rclayton@bericotechnologies.com">rclayton@bericotechnologies.com</a> <br />
-							<a href="http://rclayton.silvrback.com">http://rclayton.silvrback.com</a> <br />
-							<a href="http://www.gettingcirrius.com">http://www.gettingcirrius.com</a> <br />
-							<img src="images/github.png" alt="" style="border: none; background: none; height: 24px; margin: 3px 0 0 0" />
-							<a href="https://github.com/berico-rclayton">berico-rclayton</a>,
-							<a href="https://github.com/berico-rclayton">rclayton</a>
-						</small>
 					</p>
 				</section>
 
 				<section>
-					<h2>Goals</h2>
-					<ol>
-						<li class="fragment">Discuss Object-Oriented Programming (OOP) in JavaScript.</li>
-						<li class="fragment">Demonstrate how CoffeeScript simplifies using OOP.</li>
-					</ol>
-				</section>
+					<section>
+						<h2>Goals</h2>
+						<ol>
+							<li class="fragment">Discuss Object-Oriented Programming (OOP) in JavaScript.</li>
+							<li class="fragment">Demonstrate how CoffeeScript provides a simpler OOP model for JavaScript.</li>
+						</ol>
+					</section>
 
-				<section>
-					<h2>About Me</h2>
-					<p>
+					<section>
+						<img src="images/wrong.jpg" alt="" />
+					</section>
+
+					<section>
+						<h2>What this talk is not about</h2>
 						<ul>
-							<li>Chief Software Engineer, Berico Technologies</li>
-							<li>Hobbies:
-								<ul>
-									<li><strong>Software</strong> (truly blessed to do what I love!)</li>
-									<li><strong>Traveling</strong>, especially to historic locales.</li>
-									<li><strong>Boogie Boarding</strong></li>
-									<li><strong>Remodeling</strong> my house</li>
-									<li><strong>Whiskey</strong>, especially Scotch and Bourbon.</li>
-								</ul>
-							<li>Married with two precocious daughters (3 and 5)...</li>
+							<li>A debate about the merits of functional or object-oriented programming.</li>
+							<li>Advocation of CoffeeScript over JavaScript.</li>
 						</ul>
-					</p>
-				</section>
+						<br /><br />
+						<blockquote>Use whatever makes you feel most productive.</blockquote>
+					</section>
 
+					<section>
+						<h2>About Me</h2>
+						<p>
+							<ul>
+								<li>Chief Software Engineer, Berico Technologies</li>
+								<li>Hobbies:
+									<ul>
+										<li><strong>Software</strong> (truly blessed to do what I love!)</li>
+										<li><strong>Traveling</strong>, especially to historic locales.</li>
+										<li><strong>Boogie Boarding</strong></li>
+										<li><strong>Remodeling</strong> my house</li>
+										<li><strong>Whiskey</strong>, especially Scotch and Bourbon.</li>
+									</ul>
+								<li>Married with two precocious daughters (3 and 5)...</li>
+							</ul>
+						</p>
+					</section>
+				</section>
 
 				<section>
 					<section>
@@ -172,8 +183,7 @@ console.log(y); // 25
 };
 </code></pre>
 						<p>Behavior of the container modifies state:</p>
-<pre><code>
-var car = new Car();
+<pre><code>var car = new Car();
 car.accelerate(10); // 10mph
 car.accelerate(15); // 25mph
 </code></pre>
@@ -187,15 +197,36 @@ car.accelerate(15); // 25mph
 
 					<section>
 						<h2>Object-Oriented JavaScript <br /><small class="fragment">Confusing, underused, and underappreciated.</small></h2>
+						<img src="images/missedfive.gif" style="height: 400px" />
 					</section>
 
 					<section>
-						<h2>What's wrong with OO.js?</h2>
+						<h2>What's Confusing about OO.js?</h2>
 						<ul>
-							<li class="fragment">No standard class declaration syntax.</li>
+							<li class="fragment">No class declaration syntax.</li>
 							<li class="fragment">Unfamiliar inheritance model.</li>
-							<li class="fragment">Predominance of <em>Object-based Functional Programming</em>.</li>
+							<li class="fragment">Limited encapsulation.</li>
 						</ul>
+					</section>
+
+					<section>
+						<h2>No class declaration syntax</h2>
+						<p>Class/Type declaration is simply assigning properties and functions on another function (which is also strangely an object)!</p>
+<pre><code>var Car = function(gasAmount){
+ // This is the constructor!
+ this.speed = 0; // Public property
+ this.gas = (gasAmount > 10.5)? 10.5 : gasAmount;
+ // Public method
+ this.fillTank = function(gasAmount){
+  if ((this.gas + gasAmount) >= 10.5){ this.gas = 10.5; }
+  else { this.gas += gasAmount; }
+ }
+};
+//Public method
+Car.prototype.move = function(){
+ if (this.gas > 0){ this.gas -= 0.1; this.speed++; }
+};
+</code></pre>
 					</section>
 
 					<section>
@@ -206,23 +237,54 @@ car.accelerate(15); // 25mph
 					<section>
 						<h2>Prototypical Inheritance</h2>
 						<ul>
-							<li>Objects inherit directly from other objects (even instances).</li>
-							<li>Properties/functions are "resolved" through a prototype chain.</li>
+							<li>Objects inherit directly from other objects.</li>
+							<li>Members are "resolved" through a prototype chain.</li>
 						</ul>
-<pre><code>function Car(){
+<pre><code>var Car = function(){
  console.log("Vroom!");
- this.move = function(){ console.log("Moving"); }
+ this.speed = 0;
 };
 
-function Honda(){
+Car.prototype.move = function(){ console.log("Moving"); };
+
+var Honda = function(){
+ Car.call(this); // Call the Parent Contructor
  console.log("Gas efficient, Vroom!");
 };
 
-Honda.prototype = Car;
+Honda.prototype = Object.create(Car.prototype);
 
 var civic = new Honda();
 civic.move(); // Resolved to Car
 </code></pre>
+					</section>
+
+					<section>
+						<h2>Limited encapsulation</h2>
+						<p>Member visibility is a real problem in JavaScript, since there is no real concept of private or protected state.</p>
+<pre><code>var Clazz = function(){
+ // Crockford calls these 'private', I call them 'hidden'.
+ var hidden = true;
+ // Can access variables in the constructor.
+ // Crockford calls this a "privileged method"
+ var modifyInternal = function(value){ hidden = value; }
+ // Public variable
+ this.publicVar = 10;
+ // 'Public-privileged' method since it has access to
+ // variables defined within the constructor.
+ this.publicMethod = function(){}
+}
+// Public method attached to the prototype.
+Clazz.prototype.move = function(){
+ // Has no access to variables defined within the constructor
+};
+</code></pre>
+						<br /><br />
+						<small>Douglas Crockford would disagree with me to some extent. You can see a more indepth article about member visibility here: <a href="http://www.crockford.com/javascript/private.html">http://www.crockford.com/javascript/private.html</a></small>
+					</section>
+
+					<section>
+						<h2>So how do we make OOP in JavaScript more approachable?</h2>
 					</section>
 
 				</section>
@@ -230,7 +292,27 @@ civic.move(); // Resolved to Car
 				<section>
 
 					<section>
+						<h1>CoffeeScript!</h1>
+						<div class="fragment">
+							<blockquote>is a little language that compiles into JavaScript.<br />
+								Underneath that awkward Java-esque patina, JavaScript has always had a gorgeous heart.<br />
+								<span class="emphasize">CoffeeScript is an attempt to expose the good parts of JavaScript in a simple way.</span>
+							</blockquote>
+							<br /><br />
+							<small>http://coffeescript.org/</small>
+						</div>
+					</section>
+
+					<section>
 						<h2>Object-Oriented CoffeeScript</h2>
+						<blockquote>Instead of repetitively attaching functions to a prototype, CoffeeScript provides a basic class structure that allows you to name your class, set the superclass, assign prototypal properties, and define the constructor, in a single assignable expression.
+						</blockquote>
+						<br /><br />
+						<small>http://coffeescript.org/#classes</small>
+					</section>
+
+					<section>
+						<img src="images/anchorman.jpg" style="height: 400px" />
 					</section>
 
 					<section>
@@ -240,7 +322,9 @@ civic.move(); // Resolved to Car
  move: (mph) -> @speed += mph
 </code></pre>
 						<br />
-<pre><code>var Car;
+						<small><strong>Note:</strong> <span class="emphasize">@</span> is a shortcut for <span class="emphasize">this</span>; you are free to keep using <span class="emphasize">this</span> if you want.</small>
+						<br />
+<pre class="fragment"><code>var Car;
 
 Car = (function() {
  function Car() {}
@@ -262,7 +346,7 @@ Car = (function() {
  constructor: (name) ->
   console.log "Created car named '#{name}'"
 </code></pre><br />
-<pre><code>var Car;
+<pre class="fragment"><code>var Car;
 
 Car = (function() {
  function Car(name) {
@@ -280,7 +364,7 @@ Car = (function() {
  constructor: (@name, @mpg) ->
   console.log "Created car named '#{@name}' with #{@mpg} mpgs."
 </code></pre><br />
-<pre><code>var Car;
+<pre class="fragment"><code>var Car;
 
 Car = (function() {
   function Car(name, mpg) {
@@ -304,7 +388,7 @@ Car = (function() {
  hiddenMethod = -> console.log "Hidden!"
  publicMethod: -> console.log "Public!"
 </code></pre><br />
-<pre><code>var Clazz;
+<pre class="fragment"><code>var Clazz;
 
 Clazz = (function() {
  var hiddenMethod, hiddenVar;
@@ -331,7 +415,7 @@ Clazz = (function() {
 
 Clazz.CLASS_METHOD()
 </code></pre><br />
-<pre><code>var Clazz;
+<pre class="fragment"><code>var Clazz;
 
 Clazz = (function() {
  function Clazz() {}
@@ -431,7 +515,7 @@ class Honda extends Car
  constructor: (topSpeed, mpg, @color) ->
   super topSpeed, mpg
 </code></pre><br />
-<pre><code>Car = (function() {
+<pre class="fragment"><code>Car = (function() {
  function Car(topSpeed, mpg) {
   this.topSpeed = topSpeed;
   this.mpg = mpg;
@@ -462,7 +546,7 @@ class Honda extends Car
   console.log "This little Honda's movin'!"
   super mph
 </code></pre><br />
-<pre><code>Honda = (function(_super) {
+<pre class="fragment"><code>Honda = (function(_super) {
  __extends(Honda, _super);
 
  function Honda() {
@@ -488,7 +572,7 @@ class Honda extends Car
 
 Car::getSpeed -> @speed
 </code></pre><br />
-<pre><code>var Car;
+<pre class="fragment"><code>var Car;
 
 Car = (function() {
  function Car() {}
@@ -503,6 +587,95 @@ Car.prototype.getSpeed(function() {
  return this.speed;
 });
 </code></pre>
+					</section>
+
+					<section>
+						<h2>Function Binding</h2>
+						<p>Losing closure-scope sucks and is especially<br /> problematic when using classes:</p>
+<pre><code>class TextDestroyerOfDoom
+ message: "Your text was destroyed!"
+ destroyText: (i, element) ->
+  $(element).text @message
+
+destroyer = new TextDestroyerOfDoom()
+
+$("div").each destroyer.destroyText
+</code></pre>
+					<br />
+					<div class="fragment">
+						<h3>This code does not work!</h3>
+						<p><span class="emphasize">this</span> has been overridden by jQuery to the
+							<br />current DOM element in the iteration,
+							<br />meaning <span class="emphasize">@message</span> is undefined.
+						</p>
+					</div>
+					</section>
+
+					<section>
+						<h2>Fat Arrow =></h2>
+						<p>Binds the execution of the member method to the object instance, preserving the scope of <span class="emphasize">this</span>.</p>
+<pre><code>class TextDestroyerOfDoom
+message: "Your text was destroyed!"
+destroyText: (i, element) =>
+	$(element).text @message
+
+destroyer = new TextDestroyerOfDoom()
+
+$("div").each destroyer.destroyText
+</code></pre>
+					</section>
+
+					<section>
+						<h2>Fat Arrow, Behind the Scenes</h2>
+<pre><code>var TextDestroyerOfDoom, destroyer,
+ __bind = function(fn, me){
+  return function(){ return fn.apply(me, arguments); }; };
+
+TextDestroyerOfDoom = (function() {
+ function TextDestroyerOfDoom() {
+  this.destroyText = __bind(this.destroyText, this);
+ }
+
+ TextDestroyerOfDoom.prototype.message = "Your text was destroyed!";
+
+ TextDestroyerOfDoom.prototype.destroyText = function(i, element) {
+  return $(element).text(this.message);
+ };
+
+ return TextDestroyerOfDoom;
+})();
+</code></pre>
+					</section>
+
+				</section>
+
+				<section>
+					<section>
+						<h1>Conclusion</h1>
+					</section>
+
+					<section>
+						<h2>CoffeeScript makes OOP in JavaScript...</h2>
+					</section>
+
+					<section>
+						<h2>Understandable</h2>
+						<h2 class="fragment">Easier</h2>
+						<h2 class="fragment">Enjoyable</h2>
+					</section>
+
+					<section>
+						<h1>Thank You!</h1>
+						<img  class="fragment" src="images/himym.jpg" />
+					</section>
+
+					<section>
+						<h1>Contact Me</h1>
+						<h3>rlc.blacksun@gmail.com</h3>
+						<h3>@richardclayton</h3>
+						<h3>http://rclayton.silvrback.com</h3>
+						<h3>http://www.gettingcirrius.com</h3>
+						<h3>github.com/rclayton, github.com/berico-rclayton</h3>
 					</section>
 
 				</section>
